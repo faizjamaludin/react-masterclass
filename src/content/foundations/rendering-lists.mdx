@@ -1,3 +1,5 @@
+<TLDR>Use `map` to render lists, and give each item a stable `key` from your data, never a random value.</TLDR>
+
 To show a collection, `map` the data to JSX.
 
 <ComponentPreview name="rendering-lists/list" />
@@ -13,6 +15,10 @@ React uses the `key` to match each item between renders. Without a stable key it
 <Callout variant="warning">
 `key={Math.random()}` forces React to throw away and recreate every item on every render. It is slower and resets input focus and state.
 </Callout>
+
+### Index keys, live
+
+<BugFix broken="rendering-lists/keys-broken" fixed="rendering-lists/keys-fixed" problem="Keys are indexes. After removing the first row, the typed note stays at position 0 and now sits next to the wrong name." fix="Keys are ids. React moves each row's input state with its data." />
 
 ## Filtering and sorting
 
@@ -39,3 +45,9 @@ Always decide what the user sees when the list is empty.
 - Put the `key` on the outermost element returned from `map`.
 - A list item that grows past a few lines deserves its own component.
 - Derived data is calculated, not stored.
+
+<TryIt hint="Keep tasks and a boolean `onlyOpen` in state. Compute `visible` while rendering with filter.">Render a list of 5 tasks with a done flag. Add a filter button that shows only unfinished tasks, without storing the filtered list in state.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What makes a good key?", "options": ["The array index, always", "A random number", "A stable, unique id from the data"], "answer": 2, "why": "Index keys break when the list reorders or items are removed."}, {"question": "Which method sorts without mutating the original array?", "options": ["sort", "toSorted", "reverse"], "answer": 1, "why": "toSorted returns a new array."}]} />

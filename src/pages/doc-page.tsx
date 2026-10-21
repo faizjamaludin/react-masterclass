@@ -3,6 +3,7 @@ import { MDXProvider } from '@mdx-js/react'
 import { ChevronRight } from 'lucide-react'
 import type { MDXContent } from 'mdx/types'
 import { Link } from 'react-router-dom'
+import { CompleteButton } from '@/components/docs/complete-button'
 import { DocsPager } from '@/components/layout/docs-pager'
 import { TableOfContents, type TocItem } from '@/components/layout/table-of-contents'
 import { mdxComponents } from '@/components/docs/mdx-components'
@@ -46,6 +47,7 @@ export function DocPage({ page, Content }: DocPageProps) {
         <MDXProvider components={mdxComponents}>
           <Content />
         </MDXProvider>
+        <CompleteButton href={page.href} />
         <DocsPager href={page.href} />
       </article>
       <aside className="sticky top-24 hidden h-fit max-h-[calc(100svh-8rem)] w-56 shrink-0 overflow-y-auto xl:block">

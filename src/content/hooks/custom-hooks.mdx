@@ -1,3 +1,5 @@
+<TLDR>A custom hook shares logic, not state. Name it `useSomething` and call other hooks inside it.</TLDR>
+
 A custom hook is a function whose name starts with `use` and that calls other hooks. It shares **logic**, not state: every component that calls it gets its own copy of the state.
 
 <ComponentPreview name="custom-hooks/use-toggle" align="start" />
@@ -77,3 +79,9 @@ function useDebouncedValue<T>(value: T, delay = 300) {
 - Return the smallest useful thing: a value, a tuple, or an object.
 - A hook should do one job. Compose small hooks into bigger ones.
 - Put hooks in `src/hooks/`, with kebab-case files such as `use-online-status.ts`.
+
+<TryIt hint="The hook takes a string and calls useEffect inside it. Components just call useDocumentTitle('Home').">Extract the document title logic from the useEffect lesson into a useDocumentTitle(title) hook and use it in two components.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What does a custom hook share between components?", "options": ["State", "Logic", "DOM nodes"], "answer": 1, "why": "Each component calling it gets its own copy of the state."}, {"question": "A custom hook name must start with...", "options": ["get", "use", "with"], "answer": 1, "why": "The linter relies on the use prefix to enforce the rules of hooks."}]} />

@@ -1,3 +1,5 @@
+<TLDR>Controlled inputs for small forms. React Hook Form with Zod once a form grows.</TLDR>
+
 ## When to use which approach
 
 | Approach | Use when | Avoid when |
@@ -65,3 +67,9 @@ const { register, handleSubmit, formState } = useForm<FormValues>({
 - Always set an initial `value`. Going from `undefined` to a string makes React warn about uncontrolled to controlled.
 - Disable the submit button only while submitting, not as validation feedback.
 - Never keep a form's values in several separate states when one object will do.
+
+<TryIt hint="Track `touched` per field and set `submitting` while the async submit runs.">Build a signup form with email and password. Show errors only after a field was touched, and disable the button while submitting.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "When is a controlled input a good choice?", "options": ["Always, for every field", "A few fields, or when the UI reacts to every keystroke", "Never"], "answer": 1, "why": "For big forms use React Hook Form with Zod."}, {"question": "What does preventDefault() do on submit?", "options": ["Validates the form", "Stops the browser reloading the page", "Clears the inputs"], "answer": 1, "why": "You handle the submit yourself in JavaScript."}]} />

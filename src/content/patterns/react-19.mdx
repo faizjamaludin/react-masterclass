@@ -1,3 +1,5 @@
+<TLDR>Actions, `useActionState`, `useOptimistic` and `use` remove most form and async boilerplate.</TLDR>
+
 React 19 adds APIs that remove a lot of boilerplate around forms, async work and refs.
 
 ## When to use
@@ -80,3 +82,9 @@ Wrap the component in `<Suspense fallback={...}>` for the loading state. Create 
 - Adopt Actions for new forms that post to a server.
 - Keep using TanStack Query for cached server state. The new APIs complement it.
 - Upgrade guide: run the official codemods, then fix the remaining warnings.
+
+<TryIt hint="The action receives the previous state and FormData. Return an error message string, or null on success.">Convert the signup form to use `<form action>` with useActionState, and show pending state with useFormStatus.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What does useOptimistic do?", "options": ["Caches server data", "Shows the expected result immediately and reverts on failure", "Retries failed requests"], "answer": 1, "why": "Great for likes and toggles where success is the norm."}, {"question": "What is wrong with use(fetch(url)) inside the component?", "options": ["Nothing", "The promise is created every render", "use cannot read promises"], "answer": 1, "why": "Create the promise outside the component or cache it."}]} />

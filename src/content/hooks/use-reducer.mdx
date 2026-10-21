@@ -1,3 +1,5 @@
+<TLDR>`useReducer` keeps complex state changes in one pure function, driven by actions.</TLDR>
+
 `useReducer` moves state logic out of event handlers into one function that describes every way the state can change.
 
 <ComponentPreview name="use-reducer/todos" align="start" />
@@ -55,3 +57,9 @@ With a discriminated union, TypeScript checks that every case is handled and tha
 - Never mutate `state` inside the reducer.
 - Keep the reducer outside the component so it is easy to test.
 - Put the pair `state` and `dispatch` in two contexts to avoid needless re-renders.
+
+<TryIt hint="The reducer is a plain function: call reducer(state, action) and assert on the returned state.">Write a shopping cart reducer with add, remove and clear actions. Add a unit test for the reducer without rendering anything.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "A reducer must be...", "options": ["Async", "A pure function", "Inside the component"], "answer": 1, "why": "No fetching, timers or mutation. Same inputs give the same output."}, {"question": "When prefer useReducer over useState?", "options": ["A single boolean", "Several values that change together by rules", "Never"], "answer": 1, "why": "It keeps the transitions in one place and is easy to test."}]} />

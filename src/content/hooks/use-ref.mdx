@@ -1,3 +1,5 @@
+<TLDR>`useRef` holds a value or a DOM node that survives renders without causing one.</TLDR>
+
 `useRef` holds a value that survives re-renders **without causing one**. It has two common jobs: reaching a DOM element, and storing a mutable value that is not part of the UI.
 
 <ComponentPreview name="use-ref/focus" />
@@ -56,3 +58,9 @@ Do not read or write `ref.current` during rendering, except to set it up once. D
 - If the UI should update when the value changes, it is state, not a ref.
 - Prefer declarative props over refs. Reach for a ref only when there is no prop for it.
 - In React 19, a function component can take `ref` as a normal prop. You no longer need `forwardRef`.
+
+<TryIt hint="ref.current = setInterval(...) on Start, clearInterval(ref.current) on Stop. The id does not need to re-render.">Build a stopwatch. Start and Stop buttons, with the interval id kept in a ref and the time in state.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "Changing ref.current does what?", "options": ["Re-renders the component", "Nothing, it does not trigger a render", "Resets the state"], "answer": 1, "why": "That is the point of a ref: it persists without rendering."}, {"question": "Which belongs in a ref?", "options": ["The text shown in a label", "A timer id", "The list of todos"], "answer": 1, "why": "Anything the screen does not depend on can live in a ref."}]} />

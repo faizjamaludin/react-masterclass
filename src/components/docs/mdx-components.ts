@@ -6,6 +6,15 @@ import { DoDont, DoDontGrid } from './do-dont'
 import { Anchor, H2, H3, InlineCode, Pre, Table } from './mdx-elements'
 import { PackageManagerCommand } from './package-manager-command'
 import { PropsTable } from './props-table'
+import { Quiz } from './quiz'
+import { TLDR } from './tldr'
+import { TryIt } from './try-it'
+import { BugFix } from './visuals/bug-fix'
+import { ContextTree } from './visuals/context-tree'
+import { DataFlow } from './visuals/data-flow'
+import { EffectLifecycle } from './visuals/effect-lifecycle'
+import { HookSlots } from './visuals/hook-slots'
+import { RenderCycle } from './visuals/render-cycle'
 
 /** Returns a component that renders `tag` with fixed classes. */
 const styled =
@@ -39,4 +48,13 @@ export const mdxComponents: MDXComponents = {
   DoDontGrid,
   PackageManagerCommand,
   PropsTable,
+  TLDR,
+  TryIt,
+  Quiz,
+  BugFix,
+  ContextTree,
+  DataFlow,
+  EffectLifecycle,
+  HookSlots,
+  RenderCycle,
 }

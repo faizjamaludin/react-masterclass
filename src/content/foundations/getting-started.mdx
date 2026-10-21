@@ -1,3 +1,5 @@
+<TLDR>Run `npm create vite@latest my-app -- --template react-ts`, then `npm run dev`.</TLDR>
+
 We use Vite with the React and TypeScript template. It starts in under a second and has hot reload built in.
 
 ## Create the project
@@ -55,3 +57,9 @@ createRoot(document.getElementById('root')!).render(
 - Keep the lint rules on. The rules of hooks catch real bugs.
 - Use TypeScript strict mode from day one.
 - Commit `package-lock.json` so everyone installs the same versions.
+
+<TryIt hint="The file is src/App.tsx. Hot reload keeps the page state while it swaps your code.">Create the project, then change the heading in App.tsx and watch the browser update without a refresh.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "Why do we keep StrictMode on?", "options": ["It makes the app faster in production", "It surfaces bugs by double-running renders and effects in development", "It is required by React"], "answer": 1, "why": "It does nothing in production and helps you find impure code early."}, {"question": "Which command starts the dev server?", "options": ["npm run build", "npm run preview", "npm run dev"], "answer": 2, "why": "npm run dev starts Vite with hot reload."}]} />

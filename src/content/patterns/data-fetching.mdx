@@ -1,3 +1,5 @@
+<TLDR>Handle loading, error and success, avoid race conditions, and use TanStack Query in real projects.</TLDR>
+
 Fetching data looks simple, and the edge cases are where bugs live. This lesson shows the basics first, then what to use in real projects.
 
 ## When to use what
@@ -63,6 +65,12 @@ What this gets right:
 - **HTTP errors.** `fetch` only rejects on network failure, so you must check `res.ok`.
 - **A discriminated union** makes impossible states (loading and error together) unrepresentable.
 
+### Race condition, live
+
+Click User 1, then User 2 right away. User 1 is slow, so its response arrives last.
+
+<BugFix broken="data-fetching/race-broken" fixed="data-fetching/race-fixed" problem="The late response for User 1 overwrites User 2, so the screen shows the wrong user." fix="The cleanup marks the old run as stale, so its late response is ignored." />
+
 ## Use a data library for real work
 
 Hand-written fetching does not give you caching, deduplication, retries, refetch on focus or mutations. Use **TanStack Query**.
@@ -87,3 +95,9 @@ Effects are for synchronising with the outside world. Server data is a cache of 
 - Never ignore the loading and error states.
 - Always handle cancellation or stale responses.
 - Do not copy server data into `useState`. Read it from the query.
+
+<TryIt hint="Create an AbortController in the effect and call abort() in the cleanup. Ignore AbortError.">Write a useFetch(url) hook that returns loading, error or success state and aborts the previous request when the url changes.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "Why abort the request in the effect cleanup?", "options": ["To save bandwidth only", "So an old response cannot overwrite a newer one", "It is required by fetch"], "answer": 1, "why": "That prevents race conditions when the id changes quickly."}, {"question": "Default for production data fetching on our team?", "options": ["useEffect + useState", "TanStack Query", "localStorage"], "answer": 1, "why": "It gives caching, retries and mutations out of the box."}]} />

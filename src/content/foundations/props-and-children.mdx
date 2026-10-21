@@ -1,3 +1,5 @@
+<TLDR>Props are read-only inputs that flow down. Pass a function prop when a child needs to tell its parent something.</TLDR>
+
 Props are the inputs of a component. Data flows **down** the tree, from parent to child, and a child never changes its own props.
 
 ## Typed props
@@ -36,6 +38,8 @@ Document every reusable component like this:
   ]}
 />
 
+<DataFlow />
+
 ## Passing functions
 
 To let a child talk to its parent, pass a function down. Name it `onSomething`.
@@ -61,3 +65,9 @@ function SearchBox({ onSearch }: { onSearch: (query: string) => void }) {
     Add a boolean per variant (`isPrimary`, `isDanger`). Combinations stop making sense.
   </DoDont>
 </DoDontGrid>
+
+<TryIt hint="Type the props with an interface. Render the button with `{onClose && <button onClick={onClose}>Close</button>}`.">Build a Panel component with a title prop and children. Add an optional onClose function prop that shows a Close button only when it is passed.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "Which is correct?", "options": ["A child can change its own props", "A child must never mutate its props", "Props flow from child to parent"], "answer": 1, "why": "Props are read-only. To talk to the parent, call a function prop."}, {"question": "What is children?", "options": ["A reserved state variable", "Whatever is placed between a component's tags", "A list of child components only"], "answer": 1, "why": "It lets the caller provide the content while the component provides the frame."}]} />

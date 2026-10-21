@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowUpRight, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { docPages, navigation } from '@/config/navigation'
+import { useProgress } from '@/hooks/use-progress'
 import '@/styles/home.css'
 
 const accents = ['var(--vibe-lime-text)', 'var(--vibe-pink)', 'var(--vibe-cyan)'] as const
@@ -41,6 +42,10 @@ function VibeCounter() {
 
 export function HomePage() {
   const total = docPages.length
+  const { completed, isComplete } = useProgress()
+  const done = docPages.filter((page) => completed.includes(page.href)).length
+  const next = docPages.find((page) => !completed.includes(page.href))
+  const percent = Math.round((done / total) * 100)
 
   return (
     <div className="vibe min-h-svh">
@@ -58,10 +63,10 @@ export function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                to={docPages[0].href}
+                to={(next ?? docPages[0]).href}
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--vibe-lime)] px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                Start level 01 <ArrowUpRight size={16} />
+                {done === 0 ? 'Start level 01' : next ? `Continue: ${next.title}` : 'Review from the start'} <ArrowUpRight size={16} />
               </Link>
               <Link
                 to="/docs/hooks/use-state"
@@ -70,7 +75,16 @@ export function HomePage() {
                 Jump to hooks
               </Link>
             </div>
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-[var(--vibe-dim)]">
+            <div className="mt-8 max-w-sm">
+              <div className="flex items-baseline justify-between font-mono text-xs text-[var(--vibe-dim)]">
+                <span>{done === total ? 'all levels cleared 🎉' : 'your progress'}</span>
+                <span><b className="text-[var(--vibe-ink)]">{done}</b>/{total}</span>
+              </div>
+              <div role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label="Course progress" className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--vibe-line)]">
+                <div className="h-full rounded-full bg-[var(--vibe-lime)] transition-[width] duration-500" style={{ width: `${percent}%` }} />
+              </div>
+            </div>
+            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-[var(--vibe-dim)]">
               <li><b className="text-[var(--vibe-ink)]">{total}</b> lessons</li>
               <li><b className="text-[var(--vibe-ink)]">{navigation.length}</b> levels</li>
               <li><b className="text-[var(--vibe-ink)]">live</b> examples</li>
@@ -97,7 +111,9 @@ export function HomePage() {
                   {String(i + 1).padStart(2, '0')}
                 </p>
                 <h3 className="mt-3 text-xl font-bold text-[var(--vibe-ink)]">{section.title}</h3>
-                <p className="font-mono text-xs text-[var(--vibe-dim)]">{section.items.length} lessons</p>
+                <p className="font-mono text-xs text-[var(--vibe-dim)]">
+                  {section.items.filter((item) => isComplete(`/docs/${section.id}/${item.slug}`)).length}/{section.items.length} done
+                </p>
                 <ul className="mt-5 flex flex-wrap gap-2">
                   {section.items.map((item) => (
                     <li key={item.slug}>
@@ -105,6 +121,7 @@ export function HomePage() {
                         to={`/docs/${section.id}/${item.slug}`}
                         className="inline-block rounded-full border border-[var(--vibe-line)] px-3 py-1 text-xs text-[var(--vibe-ink)] transition-colors hover:bg-[var(--vibe-line)] focus-visible:outline-2 focus-visible:outline-[var(--vibe-ink)]"
                       >
+                        {isComplete(`/docs/${section.id}/${item.slug}`) && <span aria-label="Completed">✓ </span>}
                         {item.title}
                       </Link>
                     </li>

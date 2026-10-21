@@ -1,6 +1,10 @@
+<TLDR>`useEffect` syncs your component with something outside React. Always clean up, and do not use it for things you can calculate.</TLDR>
+
 `useEffect` runs code **after** render to synchronise your component with something outside React: a timer, a subscription, the browser title, a network request.
 
 <ComponentPreview name="use-effect/timer" />
+
+<EffectLifecycle />
 
 ## Anatomy
 
@@ -37,6 +41,12 @@ List **every** reactive value the effect reads. The lint rule `react-hooks/exhau
 - Chaining effects that set state to trigger other effects.
 - Fetching data in production code. Use a query library.
 
+## Forgetting cleanup, live
+
+Hide the ticker and watch the total. The broken one keeps counting.
+
+<BugFix broken="use-effect/cleanup-broken" fixed="use-effect/cleanup-fixed" problem="The interval is never cleared, so it keeps running (and updating state) after the component is gone." fix="The effect returns a cleanup that clears the interval on unmount." />
+
 ## You might not need an effect
 
 Effects are an escape hatch. Do not use one to:
@@ -63,3 +73,9 @@ Anything you start, you stop: timers, event listeners, subscriptions and in-flig
 - One effect, one purpose. Split unrelated work into separate effects.
 - Do not mark the effect callback `async`. Define an async function inside and call it.
 - If you are reaching for an effect to fetch data, read [Data Fetching](/docs/patterns/data-fetching) first.
+
+<TryIt hint="Return a function from the effect that calls removeEventListener with the same handler.">Update document.title to show a counter value. Then add a window resize listener that shows the width, and clean it up.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "When does cleanup run?", "options": ["Only on unmount", "Before the next effect run and on unmount", "Before every render"], "answer": 1, "why": "Cleanup tidies up the previous run before the next setup."}, {"question": "Best place to run logic for a button click?", "options": ["useEffect", "The event handler", "A ref"], "answer": 1, "why": "Respond to events in handlers. Effects are for syncing with the outside world."}]} />

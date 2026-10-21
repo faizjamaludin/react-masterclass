@@ -1,3 +1,5 @@
+<TLDR>A component is a function that returns JSX. Keep it pure, and name it with a capital letter.</TLDR>
+
 A React app is a tree of **components**. A component is a function that takes inputs and returns a description of the UI, written in **JSX**.
 
 ## Your first component
@@ -58,3 +60,9 @@ Use early returns for whole-component states and `&&` or a ternary for small inl
 - One component per file, named export, file name in kebab-case.
 - If you cannot name a component in a few words, it does too much.
 - Never define a component inside another component. It is recreated on every render and loses its state.
+
+<TryIt hint="Use a ternary or `isAdmin && <Badge />`. isAdmin is a boolean, so && is safe here.">Write a Greeting component that takes no props and shows Hello plus a badge only when a boolean isAdmin is true. Avoid the 0 bug.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What does {count && <Badge />} render when count is 0?", "options": ["Nothing", "The number 0", "An error"], "answer": 1, "why": "0 is falsy, but React still renders the number. Use count > 0 &&."}, {"question": "Why must a component name start with a capital letter?", "options": ["It is a style preference", "So React can tell components from HTML tags", "TypeScript requires it"], "answer": 1, "why": "<card /> is an HTML tag, <Card /> is your component."}]} />

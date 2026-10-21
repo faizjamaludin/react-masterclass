@@ -1,3 +1,5 @@
+<TLDR>Build with small pieces and `children`, not one component with dozens of props.</TLDR>
+
 React favours **composition over inheritance**. Build small pieces and combine them, instead of one component with dozens of props.
 
 ## When to use
@@ -84,3 +86,9 @@ Custom hooks have replaced most render props, but they are still the right tool 
 - If a component takes more than about six props, look for slots.
 - Prefer `children` and slot props over `renderXxx` props unless the component must call your function.
 - Wrap, do not modify: build `DangerButton` by composing `Button`, not by copying it.
+
+<TryIt hint="Each part is a small component that renders a div with classes. Export them as properties, or as separate named exports.">Build a Card with Card.Header, Card.Body and Card.Footer parts that the caller can order freely.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What is the main idea of composition?", "options": ["Use class inheritance", "Combine small pieces with children and slots", "Pass everything as one config prop"], "answer": 1, "why": "Small, flexible parts beat one component with dozens of props."}, {"question": "Before reaching for context to avoid prop drilling, try...", "options": ["Global variables", "Passing the element down as a prop or children", "Copying the state"], "answer": 1, "why": "Passing the ready-made element often removes the drilling entirely."}]} />

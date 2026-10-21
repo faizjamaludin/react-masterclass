@@ -1,6 +1,12 @@
+<TLDR>`useState` gives a component memory. React stores the value, and calling the setter re-renders with the new one.</TLDR>
+
 `useState` gives a component memory. When the state changes, React re-renders the component with the new value.
 
 <ComponentPreview name="use-state/counter" />
+
+<HookSlots />
+
+<RenderCycle />
 
 ## Usage
 
@@ -51,6 +57,16 @@ Because state is not in the browser (not in `localStorage`, not in the DOM), a p
 - **Many distant components need it.** Use [useContext](/docs/hooks/use-context) or a store.
 - **It should survive a refresh or be shareable.** Put it in the URL, storage or the server.
 
+## Common bugs, live
+
+### Mutating state
+
+<BugFix broken="use-state/mutation-broken" fixed="use-state/mutation-fixed" problem="push changes the same array. React sees the same reference and does not re-render." fix="Create a new array with the spread operator, so React sees a change." />
+
+### Stale value
+
+<BugFix broken="use-state/stale-broken" fixed="use-state/stale-fixed" problem="Each call reads the same count from this render, so +3 only adds 1." fix="Pass an updater function. Each one receives the latest queued value." />
+
 ## Update from the previous value
 
 When the next value depends on the current one, pass an updater function.
@@ -90,3 +106,9 @@ Do not store what you can calculate. A filtered list, a total or a full name sho
 - Keep state minimal and avoid duplicating the same fact in two places.
 - Use `useReducer` when several values change together.
 - Reset a component's state by changing its `key`.
+
+<TryIt hint="Two states, or derive the count: `baseLikes + (liked ? 1 : 0)`. Deriving means less state to keep in sync.">Build a like button: it toggles liked on click, shows the count, and the count goes up by 1 when liked and back down when unliked.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "Where does React store a component's state?", "options": ["In the function's local variables", "In the browser's localStorage", "Inside React, in slots attached to that component instance"], "answer": 2, "why": "The function re-runs each render, so React keeps the values and returns them by call order."}, {"question": "setCount(count + 1) called three times in one click adds...", "options": ["3", "1", "It throws"], "answer": 1, "why": "They all use the same count from this render. Use setCount(c => c + 1)."}, {"question": "Which should NOT be state?", "options": ["A selected tab", "A filtered list derived from other state", "A text input value"], "answer": 1, "why": "If you can calculate it from existing state or props, calculate it during render."}]} />

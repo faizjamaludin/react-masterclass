@@ -1,3 +1,5 @@
+<TLDR>Measure first. Fix structure before reaching for `memo`, `useMemo` or `useCallback`.</TLDR>
+
 React is fast by default. Measure before you optimise, and fix the biggest problem first.
 
 ## How rendering works
@@ -22,6 +24,12 @@ Most slowness comes from three things:
 - Cheap components that render in microseconds. Memoising them costs more than it saves.
 - Props that change on every render anyway, such as a new object each time. `memo` will never skip.
 - Before fixing the structure (moving state down, lifting content up).
+
+### See it happen
+
+Type in the box. Without `memo` the child re-renders on every keystroke. Tick the box and it stops.
+
+<ComponentPreview name="performance/render-counter" align="start" />
 
 ## Fix the structure first
 
@@ -55,3 +63,9 @@ The React Compiler memoises automatically at build time. When your project enabl
 - Keep render functions pure and cheap.
 - A stable `key` and a stable component identity matter more than any memo.
 - Code-split routes with `lazy` and `Suspense` to cut the initial load.
+
+<TryIt hint="Move the input and its state into its own component, so the parent that owns the child never re-renders.">Open the render-counter example. Make the child stop re-rendering without memo by restructuring the components instead.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What should you do first when something feels slow?", "options": ["Wrap everything in memo", "Measure with the Profiler", "Rewrite in another framework"], "answer": 1, "why": "No profile, no optimisation."}, {"question": "Which often fixes re-renders without memo?", "options": ["Moving state down into the component that needs it", "Adding more state", "Using index keys"], "answer": 0, "why": "Smaller state scope means fewer components re-render."}]} />

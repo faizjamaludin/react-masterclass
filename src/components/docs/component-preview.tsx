@@ -16,7 +16,7 @@ function getExample(name: string) {
   return promise
 }
 
-function ExampleRender({ name }: { name: string }) {
+export function ExampleRender({ name }: { name: string }) {
   const { default: Example } = use(getExample(name))
   return <Example />
 }

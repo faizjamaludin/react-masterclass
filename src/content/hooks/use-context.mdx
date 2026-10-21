@@ -1,6 +1,10 @@
+<TLDR>Context shares a value with the whole subtree, so you skip passing props through every layer.</TLDR>
+
 Context lets a parent provide a value to **any** descendant, so you do not pass it through every layer in between (prop drilling).
 
 <ComponentPreview name="use-context/theme" />
+
+<ContextTree />
 
 ## Three steps
 
@@ -59,3 +63,9 @@ Every component that reads a context re-renders when its value changes. Passing 
 - Reach for composition (passing `children`) before context. Often that removes the drilling.
 - Keep each context small and focused.
 - Always create it through a provider component plus a hook.
+
+<TryIt hint="Follow the three steps: createContext, provide, consume. Use the useMode example in this lesson as a template.">Create an AuthContext with a user and a logout function, wrapped in a useAuth hook that throws outside the provider. Read it in a deeply nested component.</TryIt>
+
+## Quick check
+
+<Quiz questions={[{"question": "What re-renders when a context value changes?", "options": ["Only the provider", "Every component that reads that context", "The whole app"], "answer": 1, "why": "Consumers re-render, so keep contexts small and stable."}, {"question": "Which is a good fit for context?", "options": ["Theme or current user", "A text input value updating each keystroke", "Data from one parent to one child"], "answer": 0, "why": "Rarely-changing data needed by many components fits context."}]} />
