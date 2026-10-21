@@ -1,0 +1,41 @@
+To show a collection, `map` the data to JSX.
+
+<ComponentPreview name="rendering-lists/list" />
+
+## Keys
+
+React uses the `key` to match each item between renders. Without a stable key it can reuse the wrong DOM node and keep the wrong state.
+
+- Use a **stable, unique id** from your data, such as a database id.
+- Do not use the array index if the list can be reordered, filtered or inserted into.
+- Keys only need to be unique among siblings.
+
+<Callout variant="warning">
+`key={Math.random()}` forces React to throw away and recreate every item on every render. It is slower and resets input focus and state.
+</Callout>
+
+## Filtering and sorting
+
+Derive the visible list while rendering. Do not store it in state.
+
+```tsx
+const visible = fruits
+  .filter((f) => f.inStock)
+  .toSorted((a, b) => a.name.localeCompare(b.name))
+```
+
+`toSorted` returns a new array. `sort` mutates the original, which can cause hard-to-find bugs.
+
+## Empty state
+
+```tsx
+if (visible.length === 0) return <p>No fruit available.</p>
+```
+
+Always decide what the user sees when the list is empty.
+
+## Rules of thumb
+
+- Put the `key` on the outermost element returned from `map`.
+- A list item that grows past a few lines deserves its own component.
+- Derived data is calculated, not stored.

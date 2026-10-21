@@ -1,0 +1,110 @@
+/* Design tokens for the masterclass docs site. */
+@theme static {
+  /* Brand color palette — derived from #44214D (deep plum) */
+  --color-brand-50: #f5f0f6;
+  --color-brand-100: #ede0ef;
+  --color-brand-200: #d9bfde;
+  --color-brand-300: #bf94c9;
+  --color-brand-400: #a168b0;
+  --color-brand-500: #7f4590;
+  --color-brand-600: #44214D;
+  --color-brand-700: #3a1b42;
+  --color-brand-800: #2e1535;
+  --color-brand-900: #1e0d23;
+  --color-brand-950: #130816;
+
+  /* Neutral palette */
+  --color-surface: #fafafa;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #f4f3f6;
+  --color-border: #e8e6eb;
+  --color-border-subtle: #f0eef2;
+  --color-overlay: rgba(0, 0, 0, 0.4); /* scrim behind dialogs and sheets */
+
+  /* Text */
+  --color-text-primary: #1a1523;
+  --color-text-secondary: #6b6375;
+  --color-text-muted: #9c94a3;
+  --color-text-inverse: #ffffff;
+
+  /* Semantic */
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-error: #dc2626;
+  --color-error-text: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fecaca;
+  --color-info: #2563eb;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+
+  /* Micro type scale — for badges, chart labels, captions below text-xs */
+  --font-size-micro: 10px;
+  --font-size-tiny: 11px;
+
+  /* Typography */
+  --font-heading: "Poppins", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+
+  /* Shadow */
+  --shadow-card: 0 1px 3px rgba(68, 33, 77, 0.06), 0 4px 16px rgba(68, 33, 77, 0.04);
+  --shadow-elevated: 0 4px 12px rgba(68, 33, 77, 0.1), 0 1px 4px rgba(68, 33, 77, 0.06);
+  --shadow-modal: 0 20px 60px rgba(68, 33, 77, 0.16), 0 4px 16px rgba(68, 33, 77, 0.08);
+
+  /* Chart palette — mid-tone, 6 distinct hues */
+  --chart-1: #9d82c4;   /* mid lavender   — brand-adjacent        */
+  --chart-2: #57b5ad;   /* mid teal        — cool, calm            */
+  --chart-3: #ef8070;   /* mid coral       — warm contrast         */
+  --chart-4: #72b87a;   /* mid sage        — natural green         */
+  --chart-5: #62a4d4;   /* mid sky blue    — airy                  */
+  --chart-6: #eda83c;   /* mid amber       — warm golden           */
+}
+
+.dark {
+  /* Low-chroma surfaces with a hint of brand purple. Saturated purple-black strains the eyes. */
+  --color-surface: #151118;
+  --color-surface-raised: #1e1922;
+  --color-surface-overlay: #29232e;
+  --color-border: #3b3442;
+  --color-border-subtle: #2b2530;
+  --color-overlay: rgba(0, 0, 0, 0.4);
+
+  /* Off-white and soft greys. Muted text keeps at least 4.5:1 on the surface. */
+  --color-text-primary: #ece8ef;
+  --color-text-secondary: #b8b0bf;
+  --color-text-muted: #8f8698;
+  --color-text-inverse: #1e1922;
+
+  --color-success-bg: #112119;
+  --color-success-border: #1f4d33;
+  --color-warning-bg: #231c10;
+  --color-warning-border: #6b4a14;
+  --color-error-text: #f87171;
+  --color-error-bg: #261416;
+  --color-error-border: #7a2a2a;
+  --color-info-bg: #101a28;
+  --color-info-border: #26457a;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.2);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+
+  /* Chart palette — slightly richer for dark backgrounds */
+  --chart-1: #8a6db8;   /* deeper lavender  */
+  --chart-2: #429e96;   /* deeper teal      */
+  --chart-3: #e0604c;   /* deeper coral     */
+  --chart-4: #58a062;   /* deeper sage      */
+  --chart-5: #4a8ec4;   /* deeper sky       */
+  --chart-6: #d4901c;   /* deeper amber     */
+}

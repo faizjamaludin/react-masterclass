@@ -1,0 +1,65 @@
+`useEffect` runs code **after** render to synchronise your component with something outside React: a timer, a subscription, the browser title, a network request.
+
+<ComponentPreview name="use-effect/timer" />
+
+## Anatomy
+
+```tsx
+useEffect(() => {
+  // 1. setup: runs after render
+  const id = setInterval(tick, 1000)
+
+  // 2. cleanup: runs before the next setup and on unmount
+  return () => clearInterval(id)
+}, [dependency]) // 3. when to re-run
+```
+
+| Dependency array | Effect runs |
+| --- | --- |
+| Omitted | After every render. Rarely what you want. |
+| `[]` | Once after the first render (and cleanup on unmount). |
+| `[a, b]` | After the first render, and whenever `a` or `b` changes. |
+
+List **every** reactive value the effect reads. The lint rule `react-hooks/exhaustive-deps` checks this, so do not silence it.
+
+## When to use
+
+- Subscribe to something outside React: WebSocket, browser events, `IntersectionObserver`.
+- Start and stop timers.
+- Sync with a non-React widget or a browser API, such as `document.title`.
+- Send analytics when a screen is shown because it was shown, not because of a click.
+
+## When not to use
+
+- Calculating a value from props or state. Do it while rendering.
+- Handling a click, submit or change. Use the event handler.
+- Resetting state when a prop changes. Use a `key`.
+- Chaining effects that set state to trigger other effects.
+- Fetching data in production code. Use a query library.
+
+## You might not need an effect
+
+Effects are an escape hatch. Do not use one to:
+
+- **Derive data from state or props.** Calculate it during render.
+- **Respond to a user event.** Put the logic in the event handler.
+- **Reset state when a prop changes.** Give the component a `key`.
+
+<DoDontGrid>
+  <DoDont type="do">
+    Compute `fullName` from `firstName` and `lastName` while rendering.
+  </DoDont>
+  <DoDont type="dont">
+    Keep `fullName` in state and update it from an effect. It renders twice and can show stale data.
+  </DoDont>
+</DoDontGrid>
+
+## Always clean up
+
+Anything you start, you stop: timers, event listeners, subscriptions and in-flight requests. Strict Mode runs setup, cleanup and setup again in development to prove your cleanup works.
+
+## Rules of thumb
+
+- One effect, one purpose. Split unrelated work into separate effects.
+- Do not mark the effect callback `async`. Define an async function inside and call it.
+- If you are reaching for an effect to fetch data, read [Data Fetching](/docs/patterns/data-fetching) first.

@@ -1,0 +1,61 @@
+Context lets a parent provide a value to **any** descendant, so you do not pass it through every layer in between (prop drilling).
+
+<ComponentPreview name="use-context/theme" />
+
+## Three steps
+
+```tsx
+// 1. Create
+const ModeContext = createContext<ModeValue | null>(null)
+
+// 2. Provide
+<ModeContext value={{ mode, toggle }}>
+  <App />
+</ModeContext>
+
+// 3. Consume
+const { mode } = useContext(ModeContext)
+```
+
+In React 19 you render the context itself as the provider. `<Context.Provider>` still works.
+
+## Wrap it in a hook
+
+Export a custom hook so consumers cannot forget the provider, and get a non-null type.
+
+```tsx
+function useMode() {
+  const value = useContext(ModeContext)
+  if (!value) throw new Error('useMode must be used inside <ModeProvider>')
+  return value
+}
+```
+
+## When to use
+
+- Theme and locale.
+- The current user.
+- Compound components that share state, such as tabs.
+- Data many components at different depths need, and that changes rarely.
+
+## When not to use
+
+- Passing data through one or two layers. Plain props are clearer.
+- Fast-changing global state, such as form input or mouse position. Every consumer re-renders.
+- Server data. Use a query library.
+- To avoid prop drilling when passing `children` or an element would do.
+
+## Watch out
+
+<Callout variant="warning">
+Every component that reads a context re-renders when its value changes. Passing a new object literal as the value re-renders all consumers on every provider render.
+</Callout>
+
+- Keep the value stable with `useMemo`, or split rarely-changing and often-changing data into separate contexts.
+- Context is not a state manager. For frequently updating global state, use a dedicated store.
+
+## Rules of thumb
+
+- Reach for composition (passing `children`) before context. Often that removes the drilling.
+- Keep each context small and focused.
+- Always create it through a provider component plus a hook.

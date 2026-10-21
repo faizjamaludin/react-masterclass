@@ -1,0 +1,57 @@
+`useReducer` moves state logic out of event handlers into one function that describes every way the state can change.
+
+<ComponentPreview name="use-reducer/todos" align="start" />
+
+## Anatomy
+
+```tsx
+type Action = { type: 'add'; text: string } | { type: 'remove'; id: number }
+
+function reducer(state: Todo[], action: Action): Todo[] {
+  switch (action.type) {
+    case 'add':
+      return [...state, newTodo(action.text)]
+    case 'remove':
+      return state.filter((t) => t.id !== action.id)
+  }
+}
+
+const [todos, dispatch] = useReducer(reducer, [])
+dispatch({ type: 'add', text: 'Write tests' })
+```
+
+A reducer is a **pure function**: it takes the current state and an action, and returns the next state. No fetching, no timers, no mutation.
+
+## When to use
+
+- Several values change together, such as a form, a wizard or a cart.
+- The next state depends on rules or the previous state.
+- You want the logic in one place, easy to test and easy to read.
+
+## When not to use
+
+- A single boolean, string or number. `useState` is simpler.
+- The reducer needs side effects such as fetching. Reducers must be pure.
+- It would be a global store for the whole app. Use context plus a reducer carefully, or a store library.
+
+## `useState` or `useReducer`?
+
+| Situation | Use |
+| --- | --- |
+| One or two independent values | `useState` |
+| Several values that change together | `useReducer` |
+| Next state depends on complex rules | `useReducer` |
+| You want to unit test the logic | `useReducer` |
+| You want to pass `dispatch` through context | `useReducer` |
+
+## Tip: model actions as events
+
+Name actions after what happened (`item_added`), not how state changes (`set_items`). The reducer decides the effect.
+
+With a discriminated union, TypeScript checks that every case is handled and that each action carries the right payload.
+
+## Rules of thumb
+
+- Never mutate `state` inside the reducer.
+- Keep the reducer outside the component so it is easy to test.
+- Put the pair `state` and `dispatch` in two contexts to avoid needless re-renders.

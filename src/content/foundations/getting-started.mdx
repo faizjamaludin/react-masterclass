@@ -1,0 +1,57 @@
+We use Vite with the React and TypeScript template. It starts in under a second and has hot reload built in.
+
+## Create the project
+
+```bash
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install
+npm run dev
+```
+
+Open the URL Vite prints, usually `http://localhost:5173`.
+
+## What you get
+
+```
+my-app/
+  index.html        the single HTML page, with <div id="root">
+  src/
+    main.tsx        mounts React into #root
+    App.tsx         your first component
+  vite.config.ts
+  tsconfig.json
+```
+
+`main.tsx` is the entry point:
+
+```tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+```
+
+<Callout variant="info">
+`StrictMode` renders components and runs effects twice in development to surface bugs. It does nothing in production, so do not remove it to "fix" double logs. Fix the component instead.
+</Callout>
+
+## Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Starts the dev server with hot reload. |
+| `npm run build` | Type-checks and builds for production into `dist/`. |
+| `npm run lint` | Runs ESLint, including the hooks rules. |
+| `npm run preview` | Serves the production build locally. |
+
+## Rules of thumb
+
+- Keep the lint rules on. The rules of hooks catch real bugs.
+- Use TypeScript strict mode from day one.
+- Commit `package-lock.json` so everyone installs the same versions.

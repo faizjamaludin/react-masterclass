@@ -1,0 +1,58 @@
+`useRef` holds a value that survives re-renders **without causing one**. It has two common jobs: reaching a DOM element, and storing a mutable value that is not part of the UI.
+
+<ComponentPreview name="use-ref/focus" />
+
+## DOM access
+
+```tsx
+const inputRef = useRef<HTMLInputElement>(null)
+
+<input ref={inputRef} />
+
+inputRef.current?.focus()
+```
+
+Use it for focus, scrolling, measuring and calling imperative APIs such as `video.play()`.
+
+## Mutable value
+
+```tsx
+const timeoutId = useRef<number | null>(null)
+
+function onChange() {
+  if (timeoutId.current) clearTimeout(timeoutId.current)
+  timeoutId.current = window.setTimeout(save, 500)
+}
+```
+
+Changing `ref.current` does not re-render. Use it for timer ids, the previous value of a prop, or a flag read inside a callback.
+
+## When to use
+
+- Focus, scroll, measure or play a DOM element.
+- Store timer ids, the previous value of a prop, or a flag read in callbacks.
+- Keep a value that must not trigger a re-render when it changes.
+
+## When not to use
+
+- The value is shown on screen. Use `useState`.
+- You are reading `ref.current` while rendering.
+- A prop can do the job, such as `autoFocus` or `hidden`.
+
+## State or ref?
+
+| | `useState` | `useRef` |
+| --- | --- | --- |
+| Changing it re-renders | Yes | No |
+| Safe to read during render | Yes | No |
+| Use for | Anything shown on screen | Anything the screen does not depend on |
+
+<Callout variant="warning">
+Do not read or write `ref.current` during rendering, except to set it up once. Do it in event handlers and effects.
+</Callout>
+
+## Rules of thumb
+
+- If the UI should update when the value changes, it is state, not a ref.
+- Prefer declarative props over refs. Reach for a ref only when there is no prop for it.
+- In React 19, a function component can take `ref` as a normal prop. You no longer need `forwardRef`.

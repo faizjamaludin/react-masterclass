@@ -1,0 +1,92 @@
+`useState` gives a component memory. When the state changes, React re-renders the component with the new value.
+
+<ComponentPreview name="use-state/counter" />
+
+## Usage
+
+```tsx
+const [count, setCount] = useState(0)
+```
+
+- `count` is the value for this render. It never changes during the render.
+- `setCount` schedules a re-render with a new value.
+- The argument to `useState` is only used on the first render.
+
+## Where is the memory stored?
+
+Not in your function. A component function runs again on every render, so its local variables are thrown away each time. The state lives **inside React**.
+
+- React keeps an internal node for every component instance on screen (called a *fiber*).
+- That node holds a list of the component's hook values, in the order the hooks were called.
+- On each render, the first `useState` call returns the first slot, the second call returns the second slot, and so on. The initial value is only used when the slot is empty.
+- `setCount` writes a new value into that slot and asks React to render the component again.
+
+```tsx
+function Profile() {
+  const [name, setName] = useState('Aisyah') // slot 0
+  const [age, setAge] = useState(30)         // slot 1
+}
+```
+
+This is why hooks must be called in the same order every render, and never inside conditions or loops. React finds the right value by position, not by name.
+
+The state belongs to that **instance** of the component. Two `<Counter />` components each have their own slot. When a component is removed from the tree, its state is destroyed. When a component is rendered at the same place with the same type, its state is kept.
+
+<Callout variant="info">
+Because state is not in the browser (not in `localStorage`, not in the DOM), a page refresh resets it. To keep a value across refreshes, save it yourself, for example to `localStorage` or a server.
+</Callout>
+
+## When to use
+
+- The value changes over time **and** the screen must update when it does: counters, toggles, input values, selected tab, open or closed panels.
+- The value belongs to one component, or to a few siblings via their parent.
+- The value is something the user does or chooses, not something you can calculate.
+
+## When not to use
+
+- **You can calculate it** from props or other state (full name, filtered list, totals). Compute it while rendering.
+- **The UI does not depend on it** (timer ids, previous values, DOM nodes). Use [useRef](/docs/hooks/use-ref).
+- **Many values change together** with complex rules. Use [useReducer](/docs/hooks/use-reducer).
+- **It is data from a server.** Use a query library. See [Data Fetching](/docs/patterns/data-fetching).
+- **Many distant components need it.** Use [useContext](/docs/hooks/use-context) or a store.
+- **It should survive a refresh or be shareable.** Put it in the URL, storage or the server.
+
+## Update from the previous value
+
+When the next value depends on the current one, pass an updater function.
+
+```tsx
+setCount((c) => c + 1) // safe, even if called several times
+setCount(count + 1)    // uses the value from this render
+```
+
+## Never mutate state
+
+State is a snapshot. Create a new object or array instead.
+
+```tsx
+// Object
+setUser({ ...user, name: 'Daniel' })
+
+// Array: add, update, remove
+setItems([...items, newItem])
+setItems(items.map((i) => (i.id === id ? { ...i, done: true } : i)))
+setItems(items.filter((i) => i.id !== id))
+```
+
+## Where should state live?
+
+1. Start with state in the component that needs it.
+2. If two siblings need it, **lift it up** to their closest common parent.
+3. If many distant components need it, see [useContext](/docs/hooks/use-context).
+
+<Callout variant="tip">
+Do not store what you can calculate. A filtered list, a total or a full name should be computed during render from the state you already have.
+</Callout>
+
+## Rules of thumb
+
+- Call hooks only at the top level of a component or custom hook, never in loops or conditions.
+- Keep state minimal and avoid duplicating the same fact in two places.
+- Use `useReducer` when several values change together.
+- Reset a component's state by changing its `key`.

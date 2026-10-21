@@ -1,0 +1,63 @@
+Props are the inputs of a component. Data flows **down** the tree, from parent to child, and a child never changes its own props.
+
+## Typed props
+
+<ComponentPreview name="props/card" />
+
+```tsx
+interface ProfileCardProps {
+  name: string
+  role?: string
+  children?: ReactNode
+}
+
+function ProfileCard({ name, role = 'Engineer', children }: ProfileCardProps) {
+  // ...
+}
+```
+
+- Destructure props in the parameter list and set defaults there.
+- Mark optional props with `?` and give them a sensible default.
+- Use `ReactNode` for anything React can render, such as `children`.
+
+## Children
+
+Whatever you put between the tags arrives as `children`. It lets a component control the frame while the caller controls the content.
+
+## Props table pattern
+
+Document every reusable component like this:
+
+<PropsTable
+  rows={[
+    { name: 'name', type: 'string', description: 'Full name shown in bold.' },
+    { name: 'role', type: 'string', default: "'Engineer'", description: 'Job title under the name.' },
+    { name: 'children', type: 'ReactNode', description: 'Extra content shown below.' },
+  ]}
+/>
+
+## Passing functions
+
+To let a child talk to its parent, pass a function down. Name it `onSomething`.
+
+```tsx
+function SearchBox({ onSearch }: { onSearch: (query: string) => void }) {
+  return <input onChange={(e) => onSearch(e.target.value)} />
+}
+```
+
+## Rules of thumb
+
+- Never mutate props.
+- Prefer a few focused props over one big `config` object.
+- Do not spread unknown props (`...props`) into a DOM element unless you meant to forward attributes.
+- Avoid a boolean prop for each variation. Use one `variant` prop with a union type.
+
+<DoDontGrid>
+  <DoDont type="do">
+    Use a union type for variants: `variant: 'primary' | 'secondary'`.
+  </DoDont>
+  <DoDont type="dont">
+    Add a boolean per variant (`isPrimary`, `isDanger`). Combinations stop making sense.
+  </DoDont>
+</DoDontGrid>

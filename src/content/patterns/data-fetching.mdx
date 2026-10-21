@@ -1,0 +1,89 @@
+Fetching data looks simple, and the edge cases are where bugs live. This lesson shows the basics first, then what to use in real projects.
+
+## When to use what
+
+**Fetch in an effect with your own hook** when:
+
+- It is a learning example, a prototype or a single small request.
+- The data is used in one place and does not need caching.
+
+**Use TanStack Query** when:
+
+- The same data is used in several components or pages.
+- You need caching, retries, refetch on focus, pagination or mutations.
+- This is production code. This is our default.
+
+**Do not fetch in a component at all** when:
+
+- The data is known at build or route time. Load it in a route loader or on the server.
+- The value is derived from other data you already have.
+
+## The three states
+
+Every request is in one of these. Design all of them.
+
+| State | What to show |
+| --- | --- |
+| Loading | A skeleton or spinner. |
+| Error | A clear message and a retry action. |
+| Success | The data, or an empty state when the list is empty. |
+
+## Fetch in an effect, done safely
+
+```tsx
+function useUser(id: string) {
+  const [state, setState] = useState<
+    { status: 'loading' } | { status: 'error'; error: Error } | { status: 'success'; user: User }
+  >({ status: 'loading' })
+
+  useEffect(() => {
+    const controller = new AbortController()
+    setState({ status: 'loading' })
+
+    fetch(`/api/users/${id}`, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+        return res.json() as Promise<User>
+      })
+      .then((user) => setState({ status: 'success', user }))
+      .catch((error: Error) => {
+        if (error.name !== 'AbortError') setState({ status: 'error', error })
+      })
+
+    return () => controller.abort()
+  }, [id])
+
+  return state
+}
+```
+
+What this gets right:
+
+- **Race conditions.** If `id` changes quickly, the cleanup aborts the old request so an old response cannot overwrite a new one.
+- **HTTP errors.** `fetch` only rejects on network failure, so you must check `res.ok`.
+- **A discriminated union** makes impossible states (loading and error together) unrepresentable.
+
+## Use a data library for real work
+
+Hand-written fetching does not give you caching, deduplication, retries, refetch on focus or mutations. Use **TanStack Query**.
+
+```tsx
+const { data, isPending, error } = useQuery({
+  queryKey: ['users', id],
+  queryFn: () => getUser(id),
+})
+```
+
+- The **query key** identifies the data. Include every variable the request depends on.
+- Wrap requests in small service functions, so components never call `fetch` directly.
+- Use `useMutation` for writes, then invalidate the related keys.
+
+<Callout variant="tip">
+Effects are for synchronising with the outside world. Server data is a cache of remote state, which is why a library suits it better than `useEffect` and `useState`.
+</Callout>
+
+## Rules of thumb
+
+- Never ignore the loading and error states.
+- Always handle cancellation or stale responses.
+- Do not copy server data into `useState`. Read it from the query.

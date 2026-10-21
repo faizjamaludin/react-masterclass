@@ -1,0 +1,60 @@
+A React app is a tree of **components**. A component is a function that takes inputs and returns a description of the UI, written in **JSX**.
+
+## Your first component
+
+```tsx
+function Greeting() {
+  return <h1>Hello, team</h1>
+}
+```
+
+Rules every component follows:
+
+- The name starts with a capital letter, so React can tell it from an HTML tag.
+- It returns JSX (or `null` to render nothing).
+- It is **pure**: the same inputs give the same output, and it does not change anything outside itself while rendering.
+
+## JSX in five points
+
+```tsx
+const name = 'Aisyah'
+const isAdmin = true
+
+const view = (
+  <section className="card">
+    <h2>Hi, {name}</h2>
+    {isAdmin && <span>Admin</span>}
+    <button onClick={() => alert('Saved')} disabled={!isAdmin}>
+      Save
+    </button>
+  </section>
+)
+```
+
+1. Use `className` and `htmlFor`, not `class` and `for`.
+2. Put JavaScript expressions in curly braces. Statements such as `if` do not fit there.
+3. Return a single root. Use a fragment (`<>...</>`) when you do not want an extra element.
+4. Every tag closes, including `<input />` and `<img />`.
+5. Event handlers take a function, so write `onClick={save}`, not `onClick={save()}`.
+
+## Conditional rendering
+
+```tsx
+function Status({ loading, error }: { loading: boolean; error?: string }) {
+  if (loading) return <p>Loading…</p>
+  if (error) return <p role="alert">{error}</p>
+  return <p>All good</p>
+}
+```
+
+Use early returns for whole-component states and `&&` or a ternary for small inline pieces.
+
+<Callout variant="warning">
+`{count && <Badge />}` renders a literal `0` when `count` is 0. Write `{count > 0 && <Badge />}` instead.
+</Callout>
+
+## Rules of thumb
+
+- One component per file, named export, file name in kebab-case.
+- If you cannot name a component in a few words, it does too much.
+- Never define a component inside another component. It is recreated on every render and loses its state.

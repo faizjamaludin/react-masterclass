@@ -1,0 +1,82 @@
+React 19 adds APIs that remove a lot of boilerplate around forms, async work and refs.
+
+## When to use
+
+- **Actions and `useActionState`:** form submits and mutations where you need pending and error state.
+- **`useFormStatus`:** a shared submit button or spinner that sits deep inside a form.
+- **`useOptimistic`:** likes, toggles and list additions where the server almost always succeeds and waiting feels slow.
+- **`use`:** reading a promise passed from a parent, or reading context conditionally.
+
+## When not to use
+
+- **Actions:** for cached server state with refetching. Use TanStack Query.
+- **`useOptimistic`:** when failure is common or the result is critical, such as payments. Show a real pending state.
+- **`use`:** with a promise created inside the same component. It is recreated each render and loops.
+- Any of these before your project is on React 19. Check the version first.
+
+## Actions and `useActionState`
+
+An **action** is an async function used for a mutation. `useActionState` tracks its result and pending state.
+
+```tsx
+const [error, submit, isPending] = useActionState(async (_prev: string | null, formData: FormData) => {
+  const result = await saveProfile(formData.get('name') as string)
+  return result.ok ? null : result.message
+}, null)
+
+<form action={submit}>
+  <input name="name" />
+  <button disabled={isPending}>Save</button>
+  {error && <p role="alert">{error}</p>}
+</form>
+```
+
+Passing a function to `action` handles `preventDefault`, pending state and form reset for you.
+
+## `useFormStatus`
+
+A child of a form reads the pending state without props.
+
+```tsx
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return <button disabled={pending}>{pending ? 'Saving…' : 'Save'}</button>
+}
+```
+
+## `useOptimistic`
+
+Show the expected result immediately, and let React revert it if the request fails.
+
+```tsx
+const [optimisticTodos, addOptimistic] = useOptimistic(todos, (current, text: string) => [
+  ...current,
+  { id: crypto.randomUUID(), text, sending: true },
+])
+```
+
+## `use`
+
+`use` reads a promise or a context, and unlike other hooks it can be called inside conditions.
+
+```tsx
+function Comments({ commentsPromise }: { commentsPromise: Promise<Comment[]> }) {
+  const comments = use(commentsPromise) // suspends until resolved
+  return comments.map((c) => <p key={c.id}>{c.text}</p>)
+}
+```
+
+Wrap the component in `<Suspense fallback={...}>` for the loading state. Create the promise **outside** the component, or in a cache. A promise created during render is new every time.
+
+## Smaller changes
+
+- `ref` is a regular prop on function components. `forwardRef` is no longer needed.
+- Context can be rendered directly as a provider: `<ThemeContext value={...}>`.
+- Document metadata (`<title>`, `<meta>`) can be rendered inside components and React hoists it to the head.
+- Better error reporting and cleanup functions for refs.
+
+## Rules of thumb
+
+- Adopt Actions for new forms that post to a server.
+- Keep using TanStack Query for cached server state. The new APIs complement it.
+- Upgrade guide: run the official codemods, then fix the remaining warnings.

@@ -1,0 +1,150 @@
+/* Front page: neon-grid canvas. Dark by default, lavender paper in light theme. */
+.vibe,
+.dark .vibe-term {
+  --vibe-bg: #0a0a12;
+  --vibe-ink: #f4f4ff;
+  --vibe-dim: #9a9ab8;
+  --vibe-line: rgb(255 255 255 / 0.15);
+  --vibe-fill: rgb(255 255 255 / 0.05);
+  --vibe-grid: rgb(255 255 255 / 0.07);
+  --vibe-dot: rgb(255 255 255 / 0.12);
+  --vibe-lime: #c6ff3d;
+  --vibe-lime-text: #c6ff3d;
+  --vibe-pink: #ff4fd8;
+  --vibe-violet: #8b5cf6;
+  --vibe-cyan: #38e8ff;
+  --vibe-g1: #c6ff3d;
+  --vibe-g2: #38e8ff;
+  --vibe-g3: #ff4fd8;
+  --vibe-glow1: rgb(139 92 246 / 0.35);
+  --vibe-glow2: rgb(255 79 216 / 0.22);
+  --vibe-glow3: rgb(198 255 61 / 0.12);
+}
+
+/* Light theme: lavender paper, plum ink, same neon accents used as fills */
+:root:not(.dark) .vibe {
+  --vibe-bg: #faf7ff;
+  --vibe-ink: #1d0f2b;
+  --vibe-dim: #5f5578;
+  --vibe-line: rgb(68 33 77 / 0.18);
+  --vibe-fill: rgb(255 255 255 / 0.7);
+  --vibe-grid: rgb(68 33 77 / 0.08);
+  --vibe-dot: rgb(68 33 77 / 0.16);
+  --vibe-lime-text: #4d7c0f;
+  --vibe-pink: #c026a0;
+  --vibe-violet: #7c3aed;
+  --vibe-cyan: #0e7490;
+  --vibe-g1: #7c3aed;
+  --vibe-g2: #c026a0;
+  --vibe-g3: #f97316;
+  --vibe-glow1: rgb(167 139 250 / 0.4);
+  --vibe-glow2: rgb(244 114 182 / 0.28);
+  --vibe-glow3: rgb(198 255 61 / 0.35);
+}
+
+/* Terminal card stays dark in both themes */
+.vibe-term {
+  --vibe-ink: #f4f4ff;
+  --vibe-dim: #9a9ab8;
+  --vibe-lime-text: #c6ff3d;
+  --vibe-pink: #ff4fd8;
+  --vibe-cyan: #38e8ff;
+  background: #14111f !important;
+  border-color: rgb(255 255 255 / 0.12) !important;
+  color: #f4f4ff;
+}
+
+.vibe {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--vibe-bg);
+  color: var(--vibe-ink);
+}
+
+/* Layer 1: square grid that fades out toward the edges */
+.vibe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(to right, var(--vibe-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--vibe-grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 85%);
+}
+
+/* Layer 2: neon glows + dot pattern */
+.vibe::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 15% 10%, var(--vibe-glow1), transparent 40%),
+    radial-gradient(circle at 85% 20%, var(--vibe-glow2), transparent 38%),
+    radial-gradient(circle at 50% 100%, var(--vibe-glow3), transparent 45%),
+    radial-gradient(var(--vibe-dot) 1px, transparent 1px) 0 0 / 22px 22px;
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+
+.vibe-gradient-text {
+  background: linear-gradient(100deg, var(--vibe-g1), var(--vibe-g2) 50%, var(--vibe-g3), var(--vibe-g1));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: vibe-shift 6s linear infinite;
+}
+
+.vibe-card {
+  background: var(--vibe-fill);
+  border: 1px solid var(--vibe-line);
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vibe-card:hover {
+  transform: translateY(-4px) rotate(-0.4deg);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 12px 40px -12px var(--accent);
+}
+
+.vibe-float {
+  animation: vibe-float 5s ease-in-out infinite;
+}
+
+.vibe-caret {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  background: var(--vibe-lime);
+  animation: vibe-blink 1s steps(1) infinite;
+}
+
+@keyframes vibe-shift {
+  to { background-position: 200% center; }
+}
+
+@keyframes vibe-float {
+  50% { transform: translateY(-10px) rotate(0.6deg); }
+}
+
+@keyframes vibe-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-gradient-text,
+  .vibe-float,
+  .vibe-caret {
+    animation: none;
+  }
+  .vibe-card,
+  .vibe-card:hover {
+    transition: none;
+    transform: none;
+  }
+}

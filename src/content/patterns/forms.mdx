@@ -1,0 +1,67 @@
+## When to use which approach
+
+| Approach | Use when | Avoid when |
+| --- | --- | --- |
+| Controlled inputs with `useState` | One to three fields, or the UI reacts to every keystroke (live search, character counter). | Many fields or heavy validation. It re-renders on every key. |
+| Uncontrolled with a `ref` or `FormData` | You only need the values on submit. | You need live validation or to show the value elsewhere as it changes. |
+| React Hook Form + Zod | Real forms: many fields, shared rules, typed values. | A tiny form where the library costs more than it saves. |
+| Actions (`<form action>`) | The form posts to a server and you want pending and error state built in. See [React 19](/docs/patterns/react-19). | You need fully client-side, field-by-field validation. |
+
+## Controlled inputs
+
+In a controlled input, React state is the single source of truth. The input shows `value` and reports changes through `onChange`.
+
+<ComponentPreview name="forms/signup" align="start" />
+
+```tsx
+const [email, setEmail] = useState('')
+
+<input value={email} onChange={(e) => setEmail(e.target.value)} />
+```
+
+## Submit handling
+
+```tsx
+<form
+  noValidate
+  onSubmit={(e) => {
+    e.preventDefault()
+    save({ email })
+  }}
+>
+```
+
+- Use a real `<form>` and a `type="submit"` button so Enter works and screen readers understand it.
+- Call `preventDefault()` to stop the browser reloading the page.
+- Add `noValidate` when you show your own error messages.
+
+## Validation
+
+1. Validate on **submit**, and on **blur** after the field has been touched. Do not show errors while someone is still typing their first character.
+2. Show the message next to the field, and link it with `aria-describedby`.
+3. Keep error text short and specific: "Enter a valid email", not "Invalid".
+
+## Many fields? Use a library
+
+Hand-written state works for two or three fields. Beyond that, use **React Hook Form** with a **Zod** schema. It keeps inputs uncontrolled for speed, and the schema doubles as your TypeScript type.
+
+```tsx
+const schema = z.object({
+  email: z.email('Enter a valid email'),
+  age: z.number().min(18, 'Must be 18 or older'),
+})
+type FormValues = z.infer<typeof schema>
+
+const { register, handleSubmit, formState } = useForm<FormValues>({
+  resolver: zodResolver(schema),
+  defaultValues: { email: '' },
+  mode: 'onTouched',
+})
+```
+
+## Rules of thumb
+
+- Every input has a visible `<label>`. A placeholder is not a label.
+- Always set an initial `value`. Going from `undefined` to a string makes React warn about uncontrolled to controlled.
+- Disable the submit button only while submitting, not as validation feedback.
+- Never keep a form's values in several separate states when one object will do.

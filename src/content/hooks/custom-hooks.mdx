@@ -1,0 +1,79 @@
+A custom hook is a function whose name starts with `use` and that calls other hooks. It shares **logic**, not state: every component that calls it gets its own copy of the state.
+
+<ComponentPreview name="custom-hooks/use-toggle" align="start" />
+
+## Extracting a hook
+
+Before:
+
+```tsx
+function OnlineBadge() {
+  const [online, setOnline] = useState(navigator.onLine)
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine)
+    window.addEventListener('online', update)
+    window.addEventListener('offline', update)
+    return () => {
+      window.removeEventListener('online', update)
+      window.removeEventListener('offline', update)
+    }
+  }, [])
+  return <span>{online ? 'Online' : 'Offline'}</span>
+}
+```
+
+After:
+
+```tsx
+function useOnlineStatus() {
+  const [online, setOnline] = useState(navigator.onLine)
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine)
+    window.addEventListener('online', update)
+    window.addEventListener('offline', update)
+    return () => {
+      window.removeEventListener('online', update)
+      window.removeEventListener('offline', update)
+    }
+  }, [])
+  return online
+}
+
+function OnlineBadge() {
+  return <span>{useOnlineStatus() ? 'Online' : 'Offline'}</span>
+}
+```
+
+The component now says **what** it needs. The hook holds **how**.
+
+## Another example: debounce
+
+```tsx
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(id)
+  }, [value, delay])
+  return debounced
+}
+```
+
+## When to use
+
+- The same stateful logic appears in two or more components.
+- A component mixes UI with a lot of wiring, and a named hook would make it readable.
+- You want to test logic apart from the UI.
+
+## When not to use
+
+- The code does not call any hook. Write a plain function instead.
+- To make a file shorter. A hook with one `useState` and no logic adds a name without adding meaning.
+- To share state between components. Each call gets its own state, so use context or lift state up.
+
+## Rules of thumb
+
+- Always start the name with `use`. The linter relies on it.
+- Return the smallest useful thing: a value, a tuple, or an object.
+- A hook should do one job. Compose small hooks into bigger ones.
+- Put hooks in `src/hooks/`, with kebab-case files such as `use-online-status.ts`.

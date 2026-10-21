@@ -1,0 +1,86 @@
+React favours **composition over inheritance**. Build small pieces and combine them, instead of one component with dozens of props.
+
+## When to use
+
+- A component needs to wrap content it knows nothing about: cards, layouts, modals.
+- A component has several regions (header, body, actions) that callers fill differently.
+- Parts must work together but stay flexible, such as tabs, menus and accordions.
+- You are tempted to add a prop only to toggle a bit of markup.
+
+## When not to use
+
+- The component is simple and always looks the same. A few plain props are clearer.
+- There is only one valid way to arrange the parts. A compound API adds ceremony and room for misuse.
+- You are building slots nobody will fill. Add flexibility when a second use case appears.
+
+## Children as a slot
+
+```tsx
+function Card({ children }: { children: ReactNode }) {
+  return <div className="rounded-lg border p-4">{children}</div>
+}
+
+<Card>
+  <h2>Invoice</h2>
+  <Button>Pay</Button>
+</Card>
+```
+
+## Named slots with props
+
+When a component has several regions, accept elements as props.
+
+```tsx
+function PageHeader({ title, actions }: { title: string; actions?: ReactNode }) {
+  return (
+    <header className="flex justify-between">
+      <h1>{title}</h1>
+      {actions}
+    </header>
+  )
+}
+
+<PageHeader title="Students" actions={<Button>Add student</Button>} />
+```
+
+## Compound components
+
+Related parts that work together get a shared parent, and expose a clean API.
+
+```tsx
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="billing">Billing</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">…</TabsContent>
+  <TabsContent value="billing">…</TabsContent>
+</Tabs>
+```
+
+Internally the parts share state through [context](/docs/hooks/use-context). The caller decides the layout and order. This is how the Radix primitives used in our design system work.
+
+## Avoiding prop drilling
+
+Before reaching for context, try passing the **element** down instead of the data.
+
+```tsx
+// Page knows the user, Layout does not need to
+<Layout header={<Avatar user={user} />} />
+```
+
+## Render props
+
+A prop that is a function returning JSX lets the caller decide how to render each item while the component owns the logic.
+
+```tsx
+<VirtualList items={rows} renderItem={(row) => <Row key={row.id} {...row} />} />
+```
+
+Custom hooks have replaced most render props, but they are still the right tool for rendering customisation.
+
+## Rules of thumb
+
+- If a component takes more than about six props, look for slots.
+- Prefer `children` and slot props over `renderXxx` props unless the component must call your function.
+- Wrap, do not modify: build `DangerButton` by composing `Button`, not by copying it.

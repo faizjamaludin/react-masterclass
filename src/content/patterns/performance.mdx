@@ -1,0 +1,57 @@
+React is fast by default. Measure before you optimise, and fix the biggest problem first.
+
+## How rendering works
+
+A component re-renders when its **state changes**, its **parent re-renders**, or a **context it reads changes**. Re-rendering is not the same as touching the DOM: React compares the result and only updates what changed.
+
+Most slowness comes from three things:
+
+1. Doing heavy work on every render.
+2. Rendering thousands of rows.
+3. A state placed too high, so a keystroke re-renders half the app.
+
+## When to optimise
+
+- A real interaction feels slow: typing lags, scrolling stutters, a click takes visible time.
+- The Profiler shows a component rendering often or slowly.
+- You render hundreds or thousands of items.
+
+## When not to optimise
+
+- "It might be slow." Measure first.
+- Cheap components that render in microseconds. Memoising them costs more than it saves.
+- Props that change on every render anyway, such as a new object each time. `memo` will never skip.
+- Before fixing the structure (moving state down, lifting content up).
+
+## Fix the structure first
+
+- **Move state down.** Put state in the smallest component that needs it.
+- **Lift content up.** Pass expensive children as `children`, so they do not re-render when the wrapper's state changes.
+- **Virtualise long lists.** Render only visible rows, with a library such as TanStack Virtual.
+
+## `memo`, `useMemo` and `useCallback`
+
+| Tool | Caches | Use when |
+| --- | --- | --- |
+| `memo(Component)` | A component's output, keyed by its props. | A component renders often with the same props, and is costly. |
+| `useMemo(fn, deps)` | A calculated value. | The calculation is measurably slow, or the value must keep its identity. |
+| `useCallback(fn, deps)` | A function. | The function is a prop of a `memo` component, or a dependency of a hook. |
+
+```tsx
+const visible = useMemo(() => rows.filter(matches(query)), [rows, query])
+```
+
+<Callout variant="warning">
+Memoisation has a cost: extra memory and comparison work. Adding it everywhere makes code harder to read and rarely helps. Profile with the React DevTools Profiler first.
+</Callout>
+
+## The React Compiler
+
+The React Compiler memoises automatically at build time. When your project enables it, hand-written `useMemo` and `useCallback` are mostly unnecessary, but the structural advice above still applies.
+
+## Rules of thumb
+
+- Measure first. No profile, no optimisation.
+- Keep render functions pure and cheap.
+- A stable `key` and a stable component identity matter more than any memo.
+- Code-split routes with `lazy` and `Suspense` to cut the initial load.
